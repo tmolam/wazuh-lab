@@ -117,6 +117,43 @@ Suricata was configured to monitor network traffic and forward generated alerts 
 
 ![Suricata alerts in Wazuh](screenshots/suricata-alerts.png)
 
+## Detection Analysis
+
+The lab demonstrated how endpoint and network monitoring can complement each other to provide better visibility into security events.
+
+Sysmon provided detailed telemetry about activity on the Windows endpoint, including process creation events. Suricata monitored network traffic and generated alerts for activity matching the custom detection rule. Wazuh collected and centralised these events, making them available for analysis through a single platform.
+
+The Nmap SYN scan provided a controlled way to generate network activity and validate that the custom Suricata rule worked as expected. The resulting alerts confirmed that the detection events were successfully forwarded to and displayed in Wazuh.
+
+This exercise highlighted the value of combining endpoint and network telemetry when monitoring and investigating potentially suspicious activity.
+
+## Security Operations Perspective
+
+From a security operations perspective, an alert should be treated as an indication that activity requires investigation rather than immediate confirmation of malicious behaviour.
+
+When investigating a network alert, an analyst could:
+
+- Review the source and destination IP addresses, timestamps and alert signature.
+- Examine the relevant network activity to understand what triggered the detection.
+- Check endpoint telemetry for related activity on the target system.
+- Correlate events from different sources to build a clearer picture of what happened.
+- Determine whether the activity is expected, suspicious or requires further investigation.
+
+Correlating Suricata network alerts with Sysmon endpoint events can provide additional context that may not be available from either source alone.
+
+## Limitations and Potential Improvements
+
+The lab was designed to demonstrate basic endpoint monitoring, network intrusion detection and centralised event collection. It was not intended to represent a complete production security monitoring environment.
+
+Some limitations and opportunities for further development include:
+
+- **Detection coverage:** The custom Suricata rule was tested against a controlled Nmap SYN scan. Additional network activity and attack patterns would need to be tested to evaluate broader detection coverage.
+- **False positives:** Legitimate network activity may trigger similar alerts. Detection rules would require further tuning and validation to reduce false positives.
+- **Investigation workflow:** The lab focused on generating and collecting alerts rather than implementing a complete incident investigation and response process.
+- **Event correlation:** Further development could explore more advanced correlation between network and endpoint events to improve investigation capabilities.
+- **Detection validation:** Additional controlled tests could be used to evaluate the effectiveness and limitations of the configured detection rules.
+
+These improvements would help develop the lab further towards a more comprehensive security monitoring and detection environment.
 
 ## Key Learnings
 
@@ -126,12 +163,6 @@ Suricata was configured to monitor network traffic and forward generated alerts 
 - Developed and tested a custom Suricata detection rule.
 - Validated detection results using controlled network activity.
 - Explored how endpoint and network monitoring complement each other in security operations.
-
-## Limitations
-
-- The lab was designed for learning and experimentation, not production deployment.
-- The custom detection rule was tested against controlled lab traffic and would require further tuning and validation before operational use.
-- Detection effectiveness depends on the configured rules, telemetry sources and monitored network traffic.
 
 ## Disclaimer
 
