@@ -66,7 +66,7 @@ The following screenshots document the original lab configuration and test resul
 | Screenshot | Description |
 |---|---|
 | `01-lab-architecture.png` | Lab architecture overview (to be added) |
-| `sysmon-process-detection.png` | Windows process creation event collected by Wazuh |
+| `screenshots/sysmon-process-detection.png` | Windows process creation event collected by Wazuh |
 | `suricata-custom-rule.png` | Custom rule used for testing |
 | `suricata-alerts.png` | Suricata alerts displayed in Wazuh |
 
