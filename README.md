@@ -20,18 +20,56 @@ The environment was used to investigate how endpoint and network telemetry can b
 
 ## Lab Architecture
 
-The lab consisted of the following components:
+The virtual machines were connected through a VirtualBox NAT Network named **Cyberlab**, using the network range `10.114.48.0/24`.
 
-| Component | Role |
-|---|---|
-| Ubuntu Server | Hosted the Wazuh manager and Suricata |
-| Windows 10 | Endpoint monitored by the Wazuh agent and Sysmon |
-| Kali Linux | Used to generate controlled network test traffic |
-| Wazuh | Centralised security event collection and analysis |
-| Sysmon | Provided detailed Windows endpoint telemetry |
-| Suricata | Network intrusion detection and alert generation |
+| Machine | IP address | Role |
+|---|---|---|
+| Kali Linux | `10.114.48.10` | Network testing using Nmap |
+| Windows 10 | `10.114.48.11` | Endpoint monitoring with Sysmon and Wazuh agent |
+| Ubuntu Server | `10.114.48.3` | Wazuh manager and Suricata IDS |
 
-The architecture connected endpoint and network monitoring components to Wazuh for centralised event visibility.
+```mermaid
+flowchart TB
+    subgraph NET["VirtualBox NAT Network — Cyberlab"]
+        direction TB
+        RANGE["Network: 10.114.48.0/24"]
+
+        KALI["Kali Linux<br/>10.114.48.10<br/><br/>Nmap"]
+        WIN["Windows 10<br/>10.114.48.11<br/><br/>Sysmon<br/>Wazuh agent"]
+
+        UBUNTU["Ubuntu Server<br/>10.114.48.3"]
+
+        RANGE --- KALI
+        RANGE --- WIN
+        RANGE --- UBUNTU
+
+        subgraph SERVICES["Monitoring services on Ubuntu"]
+            direction TB
+            SURICATA["Suricata IDS"]
+            EVE["eve.json"]
+            WAZUH["Wazuh manager"]
+
+            SURICATA -->|"Writes events"| EVE
+            EVE -->|"Log collection"| WAZUH
+        end
+
+        UBUNTU --- SERVICES
+    end
+
+    KALI -->|"Nmap SYN scan"| WIN
+    WIN -->|"Sysmon telemetry via Wazuh agent"| WAZUH
+    RANGE -.->|"Traffic monitored by Suricata"| SURICATA
+
+    style NET fill:#f8fafc,stroke:#64748b,color:#1e293b
+    style SERVICES fill:#f1f5f9,stroke:#64748b,color:#1e293b
+    style RANGE fill:#e2e8f0,stroke:#64748b,color:#1e293b
+    style KALI fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style WIN fill:#dcfce7,stroke:#16a34a,color:#14532d
+    style UBUNTU fill:#f3e8ff,stroke:#9333ea,color:#581c87
+    style SURICATA fill:#ffedd5,stroke:#ea580c,color:#9a3412
+    style EVE fill:#fef3c7,stroke:#d97706,color:#78350f
+    style WAZUH fill:#e0e7ff,stroke:#4f46e5,color:#312e81
+```
 
 ## Implementation
 
